@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EAMS 用户端预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+        
+        .preview-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .devices {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .device {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .device-label {
+            text-align: center;
+            padding: 10px;
+            background: #333;
+            color: #fff;
+            font-size: 14px;
+        }
+        
+        /* 手机 */
+        .phone {
+            width: 375px;
+            height: 667px;
+        }
+        
+        /* 平板 */
+        .tablet {
+            width: 768px;
+            height: 1024px;
+        }
+        
+        iframe {
+            width: 100%;
+            height: calc(100% - 40px);
+            border: none;
+        }
+        
+        .info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .info h2 {
+            color: #1677ff;
+            margin-bottom: 15px;
+        }
+        
+        .info ul {
+            margin-left: 20px;
+            color: #666;
+            line-height: 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <h1>🐱 EAMS 用户端预览</h1>
+        
+        <div class="devices">
+            <!-- 手机预览 -->
+            <div class="device phone">
+                <div class="device-label">📱 iPhone 尺寸 (375×667)</div>
+                <iframe src="chat-preview.html"></iframe>
+            </div>
+        </div>
+        
+        <div class="info">
+            <h2>用户端功能特性</h2>
+            <ul>
+                <li>💬 实时聊天 - 与AI客服或人工客服对话</li>
+                <li>📦 订单查询 - 查看历史订单并快速咨询</li>
+                <li>⚡ 快捷问题 - 一键发送常见问题</li>
+                <li>🖼️ 图片发送 - 支持发送商品图片</li>
+                <li>📱 响应式设计 - 完美适配手机/平板/电脑</li>
+                <li>🔌 嵌入集成 - 可嵌入任何电商平台页面</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

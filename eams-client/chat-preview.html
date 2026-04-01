@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>官方客服</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .chat-page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: #f5f5f5;
+        }
+        
+        /* 头部 */
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #fff;
+            border-bottom: 1px solid #e8e8e8;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .shop-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .shop-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
+        }
+        
+        .shop-detail h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #52c41a;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .icon-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            color: #666;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        
+        .icon-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        /* 消息列表 */
+        .message-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        
+        .message-date {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin: 16px 0;
+        }
+        
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message-content {
+            max-width: 80%;
+        }
+        
+        .bubble {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .message.user .bubble {
+            flex-direction: row-reverse;
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 12px;
+        }
+        
+        .text {
+            background: #fff;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+            word-break: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .message.user .text {
+            background: #1677ff;
+            color: #fff;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+            text-align: center;
+        }
+        
+        /* 快捷问题 */
+        .quick-questions {
+            background: #fff;
+            padding: 12px 16px;
+            border-top: 1px solid #e8e8e8;
+        }
+        
+        .quick-title {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        
+        .quick-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .quick-btn {
+            background: #f0f0f0;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-btn:hover {
+            background: #1677ff;
+            color: #fff;
+        }
+        
+        /* 输入区域 */
+        .input-area {
+            background: #fff;
+            border-top: 1px solid #e8e8e8;
+            padding: 8px 12px;
+        }
+        
+        .input-toolbar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .tool-btn {
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            color: #666;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        
+        .tool-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .input-box {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 8px 12px;
+        }
+        
+        .input-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            line-height: 1.5;
+            outline: none;
+            font-family: inherit;
+            padding: 4px;
+        }
+        
+        .send-btn {
+            background: #1677ff;
+            color: #fff;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        
+        .send-btn:hover {
+            background: #4096ff;
+        }
+        
+        .send-btn:disabled {
+            background: #d9d9d9;
+            cursor: not-allowed;
+        }
+        
+        /* 订单抽屉 */
+        .orders-drawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .orders-drawer.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .orders-panel {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 85%;
+            max-width: 360px;
+            background: #fff;
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .orders-drawer.open .orders-panel {
+            transform: translateX(0);
+        }
+        
+        .orders-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        
+        .orders-header h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+        }
+        
+        .orders-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+        
+        .order-item-card {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .order-item-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        
+        .order-status {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+        
+        .order-status.shipped { background: #f6ffed; color: #52c41a; }
+        .order-status.delivered { background: #f6ffed; color: #52c41a; }
+        
+        .order-item-body {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .order-item-body img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background: #e8e8e8;
+            object-fit: cover;
+        }
+        
+        .order-item-info {
+            flex: 1;
+        }
+        
+        .order-item-title {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .order-item-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ff4d4f;
+            margin-top: 4px;
+        }
+        
+        .order-item-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .action-btn {
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid #d9d9d9;
+            background: #fff;
+        }
+        
+        .action-btn.primary {
+            background: #1677ff;
+            color: #fff;
+            border-color: #1677ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-page">
+        <!-- 头部 -->
+        <header class="chat-header">
+            <div class="shop-info">
+                <div class="shop-avatar">🐱</div>
+                <div class="shop-detail">
+                    <h3>龙猫数码旗舰店</h3>
+                    <span class="status">
+                        <span class="status-dot"></span>
+                        在线
+                    </span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="toggleOrders()">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- 消息列表 -->
+        <div class="message-list" id="messageList">
+            <div class="message-date">今天 12:30</div>
+            
+            <!-- AI消息 -->
+            <div class="message">
+                <div class="message-content">
+                    <div class="bubble">
+                        <div class="avatar">AI</div>
+                        <div class="text">您好！我是智能客服助手，很高兴为您服务。请问有什么可以帮助您的？😊</div>
+                    </div>
+                    <div class="message-time">12:30</div>
+                </div>
+            </div>
+            
+            <!-- 快捷问题 -->
+            <div class="quick-questions" id="quickQuestions">
+                <div class="quick-title">常见问题</div>
+                <div class="quick-list">
+                    <button class="quick-btn" onclick="sendQuick('什么时候发货？')">什么时候发货？</button>
+                    <button class="quick-btn" onclick="sendQuick('支持退换货吗？')">支持退换货吗？</button>
+                    <button class="quick-btn" onclick="sendQuick('有优惠活动吗？')">有优惠活动吗？</button>
+                    <button class="quick-btn" onclick="sendQuick('发什么快递？')">发什么快递？</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="input-area">
+            <div class="input-toolbar">
+                <button class="tool-btn">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor" d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+                    </svg>
+                </button>
+                <button class="tool-btn">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="input-box">
+                <input type="text" id="messageInput" placeholder="请输入您的问题..." onkeypress="handleKeyPress(event)">
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()">发送</button>
+            </div>
+        </div>
+
+        <!-- 订单抽屉 -->
+        <div class="orders-drawer" id="ordersDrawer" onclick="closeOrders(event)">
+            <div class="orders-panel">
+                <div class="orders-header">
+                    <h3>我的订单</h3>
+                    <button class="close-btn" onclick="toggleOrders()">×</button>
+                </div>
+                <div class="orders-list">
+                    <div class="order-item-card">
+                        <div class="order-item-header">
+                            <span>2024-03-20</span>
+                            <span class="order-status shipped">已发货</span>
+                        </div>
+                        <div class="order-item-body">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='%23e8e8e8'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23999'%3E📱%3C/text%3E%3C/svg%3E" alt="">
+                            <div class="order-item-info">
+                                <div class="order-item-title">iPhone 15 Pro Max 256GB 原色钛金属</div>
+                                <div class="order-item-price">¥9,999</div>
+                            </div>
+                        </div>
+                        <div class="order-item-actions">
+                            <button class="action-btn primary" onclick="consultOrder('202403200001')">咨询此订单</button>
+                        </div>
+                    </div>
+                    
+                    <div class="order-item-card">
+                        <div class="order-item-header">
+                            <span>2024-03-19</span>
+                            <span class="order-status delivered">已签收</span>
+                        </div>
+                        <div class="order-item-body">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='%23e8e8e8'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23999'%3E🎧%3C/text%3E%3C/svg%3E" alt="">
+                            <div class="order-item-info">
+                                <div class="order-item-title">AirPods Pro 2 主动降噪无线耳机</div>
+                                <div class="order-item-price">¥1,899</div>
+                            </div>
+                        </div>
+                        <div class="order-item-actions">
+                            <button class="action-btn primary" onclick="consultOrder('202403190002')">咨询此订单</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const messageList = document.getElementById('messageList');
+        const messageInput = document.getElementById('messageInput');
+        const quickQuestions = document.getElementById('quickQuestions');
+        const ordersDrawer = document.getElementById('ordersDrawer');
+        
+        function getTime() {
+            const now = new Date();
+            return now.getHours().toString().padStart(2, '0') + ':' + 
+                   now.getMinutes().toString().padStart(2, '0');
+        }
+        
+        function addMessage(content, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + type;
+            
+            const bubbleContent = type === 'ai' 
+                ? `<div class="avatar">AI</div><div class="text">${content}</div>`
+                : `<div class="text">${content}</div>`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <div class="bubble">${bubbleContent}</div>
+                    <div class="message-time">${getTime()}</div>
+                </div>
+            `;
+            
+            messageList.insertBefore(messageDiv, quickQuestions);
+            messageList.scrollTop = messageList.scrollHeight;
+        }
+        
+        function sendMessage() {
+            const text = messageInput.value.trim();
+            if (!text) return;
+            
+            addMessage(text, 'user');
+            messageInput.value = '';
+            quickQuestions.style.display = 'none';
+            
+            // 模拟AI回复
+            setTimeout(() => {
+                const replies = [
+                    '收到您的问题，正在为您查询相关信息...',
+                    '好的，我来帮您处理这个问题。',
+                    '感谢您的咨询，我们的客服人员会尽快为您解答。',
+                    '这个问题很常见，让我为您提供解决方案。'
+                ];
+                const randomReply = replies[Math.floor(Math.random() * replies.length)];
+                addMessage(randomReply, 'ai');
+            }, 800);
+        }
+        
+        function sendQuick(question) {
+            messageInput.value = question;
+            sendMessage();
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function toggleOrders() {
+            ordersDrawer.classList.toggle('open');
+        }
+        
+        function closeOrders(event) {
+            if (event.target === ordersDrawer) {
+                ordersDrawer.classList.remove('open');
+            }
+        }
+        
+        function consultOrder(orderId) {
+            messageInput.value = `我想咨询订单 ${orderId} 的相关问题`;
+            ordersDrawer.classList.remove('open');
+            sendMessage();
+        }
+        
+        // 自动滚动到底部
+        window.onload = () => {
+            messageList.scrollTop = messageList.scrollHeight;
+        };
+    </script>
+</body>
+</html>

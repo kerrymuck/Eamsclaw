@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EAMS 智能客服系统 - 界面预览</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 20px;
+        }
+        .preview-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        .preview-header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .preview-content {
+            padding: 20px;
+            min-height: 400px;
+        }
+        
+        /* 登录页面样式 */
+        .login-preview {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .login-card {
+            width: 360px;
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .login-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        .form-item {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #606266;
+            font-size: 14px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-input:focus {
+            border-color: #409EFF;
+            outline: none;
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background: #409EFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        /* 布局预览 */
+        .layout-preview {
+            display: flex;
+            height: 400px;
+        }
+        .sidebar {
+            width: 200px;
+            background: #304156;
+            color: white;
+        }
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #1f2d3d;
+        }
+        .sidebar-menu {
+            padding: 10px 0;
+        }
+        .menu-item {
+            padding: 15px 20px;
+            color: #bfcbd9;
+            cursor: pointer;
+        }
+        .menu-item:hover, .menu-item.active {
+            background: #263445;
+            color: #409EFF;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            height: 60px;
+            background: white;
+            border-bottom: 1px solid #ebeef5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        .content-area {
+            flex: 1;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+        
+        /* 仪表盘样式 */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #303133;
+        }
+        .stat-label {
+            font-size: 13px;
+            color: #909399;
+        }
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .chart-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            height: 250px;
+        }
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        /* 对话管理样式 */
+        .chat-preview {
+            display: flex;
+            height: 400px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .chat-list {
+            width: 280px;
+            border-right: 1px solid #ebeef5;
+        }
+        .chat-list-header {
+            padding: 15px;
+            border-bottom: 1px solid #ebeef5;
+        }
+        .chat-item {
+            padding: 15px;
+            border-bottom: 1px solid #ebeef5;
+            cursor: pointer;
+        }
+        .chat-item:hover {
+            background: #f5f7fa;
+        }
+        .chat-window {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-header {
+            padding: 15px;
+            border-bottom: 1px solid #ebeef5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            background: #f5f7fa;
+            overflow-y: auto;
+        }
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+        .message.in {
+            justify-content: flex-start;
+        }
+        .message.out {
+            justify-content: flex-end;
+        }
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+        .message.in .message-bubble {
+            background: white;
+            border: 1px solid #ebeef5;
+        }
+        .message.out .message-bubble {
+            background: #409EFF;
+            color: white;
+        }
+        .chat-input {
+            padding: 15px;
+            border-top: 1px solid #ebeef5;
+        }
+        .input-box {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            resize: none;
+        }
+        
+        /* 知识库样式 */
+        .knowledge-preview {
+            display: flex;
+            height: 400px;
+        }
+        .category-tree {
+            width: 250px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px 0 0 8px;
+        }
+        .tree-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .tree-item:hover {
+            background: #f5f7fa;
+        }
+        .knowledge-table {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ebeef5;
+        }
+        th {
+            background: #f5f7fa;
+            font-weight: 600;
+        }
+        
+        /* 设置页面样式 */
+        .settings-tabs {
+            display: flex;
+            border-bottom: 1px solid #ebeef5;
+            margin-bottom: 20px;
+        }
+        .tab-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        .tab-item.active {
+            color: #409EFF;
+            border-bottom-color: #409EFF;
+        }
+        .settings-form {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .form-row {
+            margin-bottom: 20px;
+        }
+        .form-row label {
+            display: inline-block;
+            width: 120px;
+            color: #606266;
+        }
+        
+        .info-box {
+            background: #e6f7ff;
+            border: 1px solid #91d5ff;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .status-badge.success {
+            background: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐱 EAMS 智能客服系统 - 界面预览</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            开发服务器已启动: http://localhost:5173 | http://192.168.2.4:5173
+        </p>
+        
+        <div class="preview-grid">
+            <!-- 登录页面 -->
+            <div class="preview-card">
+                <div class="preview-header">登录页面</div>
+                <div class="preview-content login-preview">
+                    <div class="login-card">
+                        <h2 class="login-title">EAMS 智能客服系统</h2>
+                        <div class="form-item">
+                            <label class="form-label">用户名</label>
+                            <input type="text" class="form-input" placeholder="请输入用户名">
+                        </div>
+                        <div class="form-item">
+                            <label class="form-label">密码</label>
+                            <input type="password" class="form-input" placeholder="请输入密码">
+                        </div>
+                        <button class="btn-primary">登录</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 主布局 -->
+            <div class="preview-card">
+                <div class="preview-header">主布局框架</div>
+                <div class="preview-content" style="padding: 0;">
+                    <div class="layout-preview">
+                        <div class="sidebar">
+                            <div class="sidebar-header">
+                                <h3>EAMS</h3>
+                            </div>
+                            <div class="sidebar-menu">
+                                <div class="menu-item active">📊 仪表盘</div>
+                                <div class="menu-item">💬 对话管理</div>
+                                <div class="menu-item">📚 知识库</div>
+                                <div class="menu-item">⚙️ 设置</div>
+                            </div>
+                        </div>
+                        <div class="main-content">
+                            <div class="header">
+                                <h3>仪表盘</h3>
+                                <span>👤 管理员</span>
+                            </div>
+                            <div class="content-area">
+                                <div class="stats-row">
+                                    <div class="stat-card">
+                                        <div class="stat-icon" style="background: #409EFF; color: white;">💬</div>
+                                        <div>
+                                            <div class="stat-value">1,234</div>
+                                            <div class="stat-label">总会话</div>
+                                        </div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-icon" style="background: #67C23A; color: white;">✓</div>
+                                        <div>
+                                            <div class="stat-value">89%</div>
+                                            <div class="stat-label">解决率</div>
+                                        </div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-icon" style="background: #E6A23C; color: white;">👥</div>
+                                        <div>
+                                            <div class="stat-value">56</div>
+                                            <div class="stat-label">进行中</div>
+                                        </div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-icon" style="background: #F56C6C; color: white;">⏱</div>
+                                        <div>
+                                            <div class="stat-value">2.3s</div>
+                                            <div class="stat-label">平均响应</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="charts-row">
+                                    <div class="chart-card">
+                                        <h4 style="margin-bottom: 15px;">24小时趋势</h4>
+                                        <div class="chart-placeholder">📈 趋势图表</div>
+                                    </div>
+                                    <div class="chart-card">
+                                        <h4 style="margin-bottom: 15px;">意图分布</h4>
+                                        <div class="chart-placeholder">🥧 饼图</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 对话管理 -->
+            <div class="preview-card">
+                <div class="preview-header">对话管理</div>
+                <div class="preview-content" style="padding: 0;">
+                    <div class="chat-preview">
+                        <div class="chat-list">
+                            <div class="chat-list-header">
+                                <strong>会话列表</strong>
+                            </div>
+                            <div class="chat-item">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <strong>买家A</strong>
+                                    <span style="color: #67C23A; font-size: 12px;">进行中</span>
+                                </div>
+                                <div style="color: #909399; font-size: 13px; margin-top: 5px;">这个商品什么时候发货？</div>
+                                <div style="color: #c0c4cc; font-size: 12px; margin-top: 5px;">12:30</div>
+                            </div>
+                            <div class="chat-item">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <strong>买家B</strong>
+                                    <span style="color: #E6A23C; font-size: 12px;">待人工</span>
+                                </div>
+                                <div style="color: #909399; font-size: 13px; margin-top: 5px;">我要退款</div>
+                                <div style="color: #c0c4cc; font-size: 12px; margin-top: 5px;">12:25</div>
+                            </div>
+                        </div>
+                        <div class="chat-window">
+                            <div class="chat-header">
+                                <strong>买家A</strong>
+                                <div>
+                                    <button style="padding: 5px 10px; margin-right: 5px; background: #E6A23C; color: white; border: none; border-radius: 4px;">转人工</button>
+                                    <button style="padding: 5px 10px; background: #F56C6C; color: white; border: none; border-radius: 4px;">结束</button>
+                                </div>
+                            </div>
+                            <div class="chat-messages">
+                                <div class="message in">
+                                    <div class="message-bubble">这个商品什么时候发货？</div>
+                                </div>
+                                <div class="message out">
+                                    <div class="message-bubble">亲，一般24小时内发货哦~</div>
+                                </div>
+                                <div class="message in">
+                                    <div class="message-bubble">好的，谢谢！</div>
+                                </div>
+                            </div>
+                            <div class="chat-input">
+                                <textarea class="input-box" rows="3" placeholder="输入消息..."></textarea>
+                                <button style="margin-top: 10px; padding: 8px 20px; background: #409EFF; color: white; border: none; border-radius: 4px; float: right;">发送</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 知识库 -->
+            <div class="preview-card">
+                <div class="preview-header">知识库管理</div>
+                <div class="preview-content" style="padding: 0;">
+                    <div class="knowledge-preview">
+                        <div class="category-tree">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <strong>知识分类</strong>
+                                <button style="padding: 4px 12px; background: #409EFF; color: white; border: none; border-radius: 4px; font-size: 12px;">新增</button>
+                            </div>
+                            <div class="tree-item">📁 售前咨询</div>
+                            <div class="tree-item" style="padding-left: 30px;">📄 商品信息</div>
+                            <div class="tree-item" style="padding-left: 30px;">📄 价格优惠</div>
+                            <div class="tree-item">📁 售后服务</div>
+                            <div class="tree-item" style="padding-left: 30px;">📄 退换货</div>
+                            <div class="tree-item" style="padding-left: 30px;">📄 物流查询</div>
+                            <div class="tree-item">📁 常见问题</div>
+                        </div>
+                        <div class="knowledge-table">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <strong>知识条目</strong>
+                                <button style="padding: 8px 16px; background: #409EFF; color: white; border: none; border-radius: 4px;">新增条目</button>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>问题</th>
+                                        <th>答案</th>
+                                        <th>分类</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>什么时候发货？</td>
+                                        <td>亲，一般24小时内发货...</td>
+                                        <td>物流查询</td>
+                                        <td><a href="#">编辑</a> <a href="#" style="color: #F56C6C;">删除</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>支持7天无理由吗？</td>
+                                        <td>是的，我们支持7天无理由退换...</td>
+                                        <td>退换货</td>
+                                        <td><a href="#">编辑</a> <a href="#" style="color: #F56C6C;">删除</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>有优惠券吗？</td>
+                                        <td>亲，新用户可领取10元优惠券...</td>
+                                        <td>价格优惠</td>
+                                        <td><a href="#">编辑</a> <a href="#" style="color: #F56C6C;">删除</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 设置页面 -->
+            <div class="preview-card">
+                <div class="preview-header">系统设置</div>
+                <div class="preview-content">
+                    <div class="settings-tabs">
+                        <div class="tab-item active">店铺信息</div>
+                        <div class="tab-item">AI配置</div>
+                        <div class="tab-item">平台对接</div>
+                        <div class="tab-item">成员管理</div>
+                    </div>
+                    <div class="settings-form">
+                        <div class="form-row">
+                            <label>店铺名称</label>
+                            <input type="text" class="form-input" style="width: 300px;" value="示例店铺">
+                        </div>
+                        <div class="form-row">
+                            <label>店铺简介</label>
+                            <textarea class="form-input" style="width: 300px; height: 80px;">专业电商客服解决方案</textarea>
+                        </div>
+                        <div class="form-row">
+                            <label>客服电话</label>
+                            <input type="text" class="form-input" style="width: 300px;" value="400-123-4567">
+                        </div>
+                        <div class="form-row">
+                            <label>AI模型</label>
+                            <select class="form-input" style="width: 300px;">
+                                <option>GPT-3.5</option>
+                                <option>GPT-4</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <label>自动转人工</label>
+                            <input type="checkbox" checked>
+                        </div>
+                        <button class="btn-primary" style="width: auto; padding: 10px 30px;">保存设置</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 平台对接 -->
+            <div class="preview-card">
+                <div class="preview-header">平台对接</div>
+                <div class="preview-content">
+                    <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong style="font-size: 18px;">🛒 淘宝</strong>
+                                <span class="status-badge success" style="margin-left: 10px;">已连接</span>
+                            </div>
+                            <button style="padding: 8px 16px; background: #F56C6C; color: white; border: none; border-radius: 4px;">断开连接</button>
+                        </div>
+                        <p style="color: #666; margin-top: 10px;">店铺ID: TB123456789</p>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong style="font-size: 18px;">📦 京东</strong>
+                                <span class="status-badge" style="margin-left: 10px; background: #f5f5f5; color: #999; border: 1px solid #d9d9d9;">未连接</span>
+                            </div>
+                            <button style="padding: 8px 16px; background: #409EFF; color: white; border: none; border-radius: 4px;">连接</button>
+                        </div>
+                        <p style="color: #666; margin-top: 10px;">请前往京东开放平台获取 AppKey 和 AppSecret</p>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong style="font-size: 18px;">🎁 拼多多</strong>
+                                <span class="status-badge" style="margin-left: 10px; background: #f5f5f5; color: #999; border: 1px solid #d9d9d9;">未连接</span>
+                            </div>
+                            <button style="padding: 8px 16px; background: #409EFF; color: white; border: none; border-radius: 4px;">连接</button>
+                        </div>
+                        <p style="color: #666; margin-top: 10px;">请前往拼多多开放平台获取 AppKey 和 AppSecret</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-box" style="margin-top: 30px;">
+            <strong>💡 提示</strong><br>
+            开发服务器已启动，您可以通过以下地址访问实时预览：<br>
+            • 本地访问: http://localhost:5173<br>
+            • 局域网访问: http://192.168.2.4:5173
+        </div>
+    </div>
+</body>
+</html>
