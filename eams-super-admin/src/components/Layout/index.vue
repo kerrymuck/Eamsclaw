@@ -59,7 +59,7 @@
         <!-- 开发管理 -->
         <el-sub-menu index="/development">
           <template #title>
-            <el-icon><Code /></el-icon>
+            <el-icon><Monitor /></el-icon>
             <span>开发管理</span>
           </template>
           <el-menu-item index="/development">平台列表</el-menu-item>
@@ -151,7 +151,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { 
-  Odometer, Setting, OfficeBuilding, Medal, Code, 
+  Odometer, Setting, OfficeBuilding, Medal, Monitor, 
   Money, Cpu, Key, Lock, UserFilled, Fold, Expand, ArrowDown 
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'

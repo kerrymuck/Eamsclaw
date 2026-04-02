@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- 定义渐变和滤镜 -->
+  <defs>
+    <!-- 森林绿渐变 -->
+    <linearGradient id="forestGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2d5a27"/>
+      <stop offset="50%" style="stop-color:#4a7c59"/>
+      <stop offset="100%" style="stop-color:#6b9c75"/>
+    </linearGradient>
+    
+    <!-- 金色渐变 -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700"/>
+      <stop offset="100%" style="stop-color:#ffaa00"/>
+    </linearGradient>
+    
+    <!-- 阴影滤镜 -->
+    <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="2" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 外圈徽章边框 -->
+  <circle cx="150" cy="150" r="140" fill="url(#forestGrad)" stroke="#ffd700" stroke-width="4"/>
+  
+  <!-- 内圈装饰 -->
+  <circle cx="150" cy="150" r="125" fill="none" stroke="rgba(255,215,0,0.3)" stroke-width="2"/>
+  <circle cx="150" cy="150" r="115" fill="none" stroke="rgba(255,215,0,0.2)" stroke-width="1"/>
+  
+  <!-- 龙猫身体 -->
+  <ellipse cx="150" cy="160" rx="70" ry="60" fill="#6b8e6b" filter="url(#softShadow)"/>
+  
+  <!-- 肚子 -->
+  <ellipse cx="150" cy="170" rx="50" ry="40" fill="#f5f5dc"/>
+  
+  <!-- 耳朵 -->
+  <ellipse cx="115" cy="95" rx="15" ry="25" fill="#6b8e6b" transform="rotate(-20 115 95)"/>
+  <ellipse cx="185" cy="95" rx="15" ry="25" fill="#6b8e6b" transform="rotate(20 185 95)"/>
+  
+  <!-- 眼睛 -->
+  <circle cx="125" cy="140" r="12" fill="white"/>
+  <circle cx="175" cy="140" r="12" fill="white"/>
+  <circle cx="125" cy="140" r="6" fill="#1a1a1a"/>
+  <circle cx="175" cy="140" r="6" fill="#1a1a1a"/>
+  <circle cx="127" cy="138" r="2" fill="white"/>
+  <circle cx="177" cy="138" r="2" fill="white"/>
+  
+  <!-- 鼻子 -->
+  <ellipse cx="150" cy="155" rx="8" ry="5" fill="#1a1a1a"/>
+  
+  <!-- 胡须 -->
+  <line x1="90" y1="150" x2="60" y2="145" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+  <line x1="90" y1="160" x2="55" y2="160" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+  <line x1="90" y1="170" x2="60" y2="175" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+  <line x1="210" y1="150" x2="240" y2="145" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+  <line x1="210" y1="160" x2="245" y2="160" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+  <line x1="210" y1="170" x2="240" y2="175" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- 肚子上的花纹 -->
+  <g fill="none" stroke="#8fbc8f" stroke-width="3" stroke-linecap="round">
+    <path d="M130,160 Q140,150 150,160 Q160,150 170,160"/>
+    <path d="M125,175 Q135,165 145,175 Q155,165 165,175 Q175,165 185,175"/>
+    <path d="M135,190 Q145,180 155,190 Q165,180 175,190"/>
+  </g>
+  
+  <!-- 头顶的叶子 -->
+  <path d="M150,75 Q130,55 150,35 Q170,55 150,75" fill="#4a7c59" stroke="#2d5a27" stroke-width="1"/>
+  <line x1="150" y1="75" x2="150" y2="100" stroke="#4a7c59" stroke-width="3"/>
+  
+  <!-- 团队名称弧形文字 -->
+  <path id="textPath" d="M 60,230 A 90,90 0 0,0 240,230" fill="none"/>
+  <text font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffd700" letter-spacing="2">
+    <textPath href="#textPath" text-anchor="middle" startOffset="50%">
+      TOTORO AGENT TEAM
+    </textPath>
+  </text>
+  
+  <!-- 顶部装饰 -->
+  <text x="150" y="45" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,215,0,0.8)" text-anchor="middle">EST. 2026</text>
+  
+  <!-- 底部装饰 -->
+  <circle cx="150" cy="260" r="3" fill="#ffd700"/>
+  <circle cx="135" cy="258" r="2" fill="rgba(255,215,0,0.6)"/>
+  <circle cx="165" cy="258" r="2" fill="rgba(255,215,0,0.6)"/>
+</svg>

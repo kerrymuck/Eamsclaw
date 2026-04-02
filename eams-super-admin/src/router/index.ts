@@ -170,7 +170,7 @@ const router = createRouter({
 })
 
 // 路由守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const userStore = useUserStore()
   
   // 开发模式自动登录

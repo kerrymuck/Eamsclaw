@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- 定义 -->
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="200" height="200" rx="40" fill="url(#bgGrad)"/>
+  
+  <!-- 聊天气泡组 -->
+  <g transform="translate(25, 40)">
+    <!-- 气泡1 -->
+    <path d="M10,10 L50,10 Q55,10 55,15 L55,45 Q55,50 50,50 L35,50 L28,58 L23,50 L10,50 Q5,50 5,45 L5,15 Q5,10 10,10 Z" 
+          fill="white" opacity="0.9"/>
+    <text x="30" y="35" font-family="Arial" font-size="16" fill="#667eea" text-anchor="middle" font-weight="bold">淘</text>
+    
+    <!-- 气泡2 -->
+    <path d="M65,25 L105,25 Q110,25 110,30 L110,60 Q110,65 105,65 L90,65 L83,73 L78,65 L65,65 Q60,65 60,60 L60,30 Q60,25 65,25 Z" 
+          fill="white" opacity="0.85"/>
+    <text x="85" y="50" font-family="Arial" font-size="14" fill="#764ba2" text-anchor="middle" font-weight="bold">京</text>
+    
+    <!-- 气泡3 -->
+    <path d="M30,70 L70,70 Q75,70 75,75 L75,105 Q75,110 70,110 L55,110 L48,118 L43,110 L30,110 Q25,110 25,105 L25,75 Q25,70 30,70 Z" 
+          fill="white" opacity="0.95"/>
+    <text x="50" y="95" font-family="Arial" font-size="16" fill="#667eea" text-anchor="middle" font-weight="bold">AI</text>
+    
+    <!-- 气泡4 -->
+    <path d="M85,80 L125,80 Q130,80 130,85 L130,115 Q130,120 125,120 L110,120 L103,128 L98,120 L85,120 Q80,120 80,115 L80,85 Q80,80 85,80 Z" 
+          fill="white" opacity="0.9"/>
+    <text x="105" y="105" font-family="Arial" font-size="14" fill="#764ba2" text-anchor="middle" font-weight="bold">A</text>
+  </g>
+  
+  <!-- EAMS 文字 -->
+  <text x="100" y="175" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle" filter="url(#glow)">EAMS</text>
+  <text x="100" y="190" font-family="Arial, sans-serif" font-size="8" fill="rgba(255,255,255,0.7)" text-anchor="middle">电商智能客服中台</text>
+</svg>

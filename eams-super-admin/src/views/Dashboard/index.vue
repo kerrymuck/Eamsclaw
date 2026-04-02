@@ -119,7 +119,7 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import * as echarts from 'echarts'
 import { 
-  Key, User, Money, Cpu, Bell, Refresh, TrendCharts, CircleCheck, Warning 
+  Bell, Refresh 
 } from '@element-plus/icons-vue'
 
 const trendTimeRange = ref('7d')
