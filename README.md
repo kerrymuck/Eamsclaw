@@ -168,4 +168,4 @@ npm run dev
 
 ---
 
-*龙猫技术团队 | 忠于祖国，忠于人民，忠于Boss*
+*出品：Totoro Agent Team*
