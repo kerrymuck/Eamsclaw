@@ -1,0 +1,78 @@
+# Dependencies
+node_modules/
+*/node_modules/
+venv/
+*/venv/
+
+# Build outputs
+dist/
+build/
+*/dist/
+*/build/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+*/.env
+*/.env.local
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Work reports and sensitive data
+work-reports/
+daily_logs/
+daily_reports/
+memory/
+deploy/DEPLOY-EXECUTE.md
+
+# SSH keys
+ssh
+ssh.pub
+*.pem
+*.key
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Python cache
+__pycache__/
+*/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Database migrations cache
+alembic/__pycache__/
+alembic/versions/__pycache__/
+
+# Electron build
+eams-desktop/out/
+eams-desktop/dist/
+
+# Vite cache
+.vite/
+*/.vite/
