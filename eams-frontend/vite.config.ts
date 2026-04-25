@@ -13,7 +13,17 @@ export default defineConfig({
   base: './',
   server: {
     host: true,
-    port: 5176
+    port: 5176,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true
+      },
+      '/payment': {
+        target: 'http://localhost:8000',
+        changeOrigin: true
+      }
+    }
   },
   preview: {
     host: true,

@@ -1,8 +1,8 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/login',
@@ -44,7 +44,7 @@ const router = createRouter({
           path: 'system/version',
           name: 'SystemVersion',
           component: () => import('@/views/System/Version.vue'),
-          meta: { title: '版本说明' }
+          meta: { title: '版本管理' }
         },
         {
           path: 'provider',
@@ -57,6 +57,12 @@ const router = createRouter({
           name: 'ProviderSettings',
           component: () => import('@/views/Provider/Settings.vue'),
           meta: { title: '服务商设置' }
+        },
+        {
+          path: 'provider/blacklist',
+          name: 'ProviderBlacklist',
+          component: () => import('@/views/Provider/Blacklist.vue'),
+          meta: { title: '黑名单管理' }
         },
         {
           path: 'level',
@@ -135,6 +141,18 @@ const router = createRouter({
           name: 'LicenseSettings',
           component: () => import('@/views/License/Settings.vue'),
           meta: { title: '授权设置' }
+        },
+        {
+          path: 'merchant',
+          name: 'Merchant',
+          component: () => import('@/views/Merchant/index.vue'),
+          meta: { title: '商户管理' }
+        },
+        {
+          path: 'merchant/plans',
+          name: 'MerchantPlans',
+          component: () => import('@/views/Merchant/Plans.vue'),
+          meta: { title: '套餐设置' }
         },
         {
           path: 'security',

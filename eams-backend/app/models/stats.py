@@ -1,8 +1,8 @@
 from sqlalchemy import Column, DateTime, Integer, ForeignKey, String, DECIMAL, UniqueConstraint
-from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 import uuid
 from .user import Base
+from app.core.db_types import UUID
 
 
 class DailyStats(Base):

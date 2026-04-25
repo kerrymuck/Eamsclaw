@@ -9,7 +9,9 @@ import json
 import logging
 
 from app.core.database import get_db
-from app.services.message_processor import MessageProcessor
+
+# 延迟导入避免循环依赖
+MessageProcessor = None
 
 logger = logging.getLogger(__name__)
 
@@ -138,6 +140,11 @@ async def websocket_endpoint(
         }
     })
     
+    # 延迟导入
+    global MessageProcessor
+    if MessageProcessor is None:
+        from app.services.message_processor import MessageProcessor as MP
+        MessageProcessor = MP
     message_processor = MessageProcessor(db)
     
     try:

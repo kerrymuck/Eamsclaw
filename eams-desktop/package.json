@@ -1,0 +1,98 @@
+{
+  "name": "eams-desktop",
+  "version": "1.0.0",
+  "description": "EAMS 智能客服管理系统 - 商户/服务商双端桌面版",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "pack": "electron-packager . EAMS智能客服系统 --platform=win32 --arch=x64 --out=dist --overwrite --icon=assets/icon.ico --asar",
+    "pack:portable": "electron-packager . EAMS智能客服系统 --platform=win32 --arch=x64 --out=dist --overwrite --icon=assets/icon.ico --asar"
+  },
+  "build": {
+    "appId": "com.eams.desktop",
+    "productName": "EAMS智能客服系统",
+    "copyright": "Copyright © 2026 EAMS",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "assets/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../Eamsclaw/eams-merchant/dist",
+        "to": "app/merchant"
+      },
+      {
+        "from": "../eams-super-admin/dist",
+        "to": "app/provider"
+      }
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "app/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "EAMS智能客服系统",
+      "include": "installer.nsh",
+      "license": "LICENSE.txt"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.business"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm"
+      ],
+      "icon": "assets/icon.png",
+      "category": "Office"
+    }
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "electron-packager": "^17.1.2"
+  },
+  "dependencies": {
+    "electron-updater": "^6.1.7"
+  }
+}

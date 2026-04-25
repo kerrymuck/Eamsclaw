@@ -1,8 +1,8 @@
-from sqlalchemy import Column, String, DateTime, Integer, ForeignKey, Text, JSON, Boolean, DECIMAL
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, DateTime, Integer, ForeignKey, Text, Boolean, DECIMAL
 from datetime import datetime
 import uuid
 from .user import Base
+from app.core.db_types import UUID, JSON
 
 
 class IntentLog(Base):

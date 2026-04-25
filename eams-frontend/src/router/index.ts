@@ -1,8 +1,8 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/login',
@@ -27,6 +27,19 @@ const router = createRouter({
           name: 'UnifiedInbox',
           component: () => import('@/views/UnifiedInbox/index.vue'),
           meta: { title: '消息中心' }
+        },
+        // 智能体管理
+        {
+          path: 'agent/workspace',
+          name: 'AgentWorkspace',
+          component: () => import('@/views/Agent/Workspace.vue'),
+          meta: { title: '工作台管理' }
+        },
+        {
+          path: 'agent/settings',
+          name: 'AgentSettings',
+          component: () => import('@/views/Agent/Settings.vue'),
+          meta: { title: '智能体设置' }
         },
         {
           path: 'knowledge',
@@ -65,6 +78,12 @@ const router = createRouter({
           meta: { title: 'AI算力中心' }
         },
         {
+          path: 'plan',
+          name: 'Plan',
+          component: () => import('@/views/Plan/index.vue'),
+          meta: { title: '套餐订阅' }
+        },
+        {
           path: 'settings',
           name: 'Settings',
           component: () => import('@/views/Settings/index.vue'),
@@ -77,6 +96,55 @@ const router = createRouter({
         {
           path: 'shops/:pathMatch(.*)*',
           redirect: '/shops'
+        }
+      ]
+    },
+    {
+      path: '/provider',
+      component: () => import('@/views/Provider/Layout.vue'),
+      redirect: '/provider/dashboard',
+      children: [
+        {
+          path: 'dashboard',
+          name: 'ProviderDashboard',
+          component: () => import('@/views/Provider/Dashboard.vue'),
+          meta: { title: '数据面板' }
+        },
+        {
+          path: 'merchants',
+          name: 'ProviderMerchants',
+          component: () => import('@/views/Provider/Merchants.vue'),
+          meta: { title: '商户管理' }
+        },
+        {
+          path: 'plans',
+          name: 'ProviderPlans',
+          component: () => import('@/views/Provider/Plans.vue'),
+          meta: { title: '套餐管理' }
+        },
+        {
+          path: 'license',
+          name: 'ProviderLicense',
+          component: () => import('@/views/Provider/License.vue'),
+          meta: { title: '授权码管理' }
+        },
+        {
+          path: 'ai-power',
+          name: 'ProviderAIPower',
+          component: () => import('@/views/Provider/AIPower.vue'),
+          meta: { title: 'AI算力管理' }
+        },
+        {
+          path: 'finance',
+          name: 'ProviderFinance',
+          component: () => import('@/views/Provider/Finance.vue'),
+          meta: { title: '财务管理' }
+        },
+        {
+          path: 'account',
+          name: 'ProviderAccount',
+          component: () => import('@/views/Provider/Account.vue'),
+          meta: { title: '账号管理' }
         }
       ]
     },

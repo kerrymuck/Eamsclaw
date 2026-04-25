@@ -21,6 +21,27 @@
             <el-option label="普通服务商" value="normal" />
           </el-select>
         </el-form-item>
+        <el-form-item label="时间周期">
+          <el-select v-model="searchForm.timeRange" placeholder="全部时间" clearable @change="handleTimeRangeChange">
+            <el-option label="当天" value="today" />
+            <el-option label="本月" value="thisMonth" />
+            <el-option label="近30天" value="last30Days" />
+            <el-option label="近90天" value="last90Days" />
+            <el-option label="近半年" value="last6Months" />
+            <el-option label="近一年" value="last1Year" />
+            <el-option label="自定义" value="custom" />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="searchForm.timeRange === 'custom'" label="自定义时间">
+          <el-date-picker
+            v-model="searchForm.customDateRange"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="YYYY-MM-DD"
+          />
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleSearch">
             <el-icon><Search /></el-icon> 搜索
@@ -185,8 +206,17 @@ const currentProvider = ref<any>(null)
 const searchForm = reactive({
   name: '',
   status: '',
-  level: ''
+  level: '',
+  timeRange: '',
+  customDateRange: [] as string[]
 })
+
+// 时间周期处理
+const handleTimeRangeChange = (val: string) => {
+  if (val !== 'custom') {
+    searchForm.customDateRange = []
+  }
+}
 
 const page = reactive({
   current: 1,
@@ -258,6 +288,8 @@ const resetSearch = () => {
   searchForm.name = ''
   searchForm.status = ''
   searchForm.level = ''
+  searchForm.timeRange = ''
+  searchForm.customDateRange = []
 }
 
 const handleAdd = () => {

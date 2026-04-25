@@ -20,3 +20,6 @@ pytest-asyncio==0.23.3
 
 # 新增依赖
 apscheduler==3.10.4
+
+# 支付相关
+alipay-sdk-python==3.7.1018

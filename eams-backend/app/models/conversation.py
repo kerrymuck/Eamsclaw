@@ -1,9 +1,9 @@
-from sqlalchemy import Column, String, DateTime, Integer, ForeignKey, Text, ARRAY, JSON, Boolean
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, DateTime, Integer, ForeignKey, Text, Boolean, DECIMAL
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
 from .user import Base
+from app.core.db_types import UUID, ARRAY, JSON
 
 
 class Conversation(Base):
@@ -19,16 +19,22 @@ class Conversation(Base):
     status = Column(String(20), default='active')  # active/closed/pending_handoff/handled
     priority = Column(Integer, default=0)
     tags = Column(ARRAY(String))
-    metadata = Column(JSON, default={})
+    meta_data = Column(JSON, default={})  # 避免使用保留字metadata
     last_message_at = Column(DateTime)
     last_message_preview = Column(String(200))
     unread_count = Column(Integer, default=0)
     assigned_to = Column(UUID(as_uuid=True), ForeignKey("users.id"))
     handoff_reason = Column(String(50))
     handoff_note = Column(Text)
+    handoff_at = Column(DateTime)
     closed_at = Column(DateTime)
     closed_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
     close_reason = Column(String(50))
+    
+    # 统计字段
+    ai_message_count = Column(Integer, default=0)
+    manual_message_count = Column(Integer, default=0)
+    
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

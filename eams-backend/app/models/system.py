@@ -1,8 +1,8 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey, Text, JSON, UniqueConstraint
-from sqlalchemy.dialects.postgresql import UUID, INET
+from sqlalchemy import Column, String, DateTime, ForeignKey, Text, UniqueConstraint
 from datetime import datetime
 import uuid
 from .user import Base
+from app.core.db_types import UUID, INET, JSON
 
 
 class Setting(Base):

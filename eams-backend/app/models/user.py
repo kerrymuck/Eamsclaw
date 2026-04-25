@@ -1,8 +1,9 @@
-from sqlalchemy import Column, String, Boolean, DateTime, Integer, ForeignKey, Text, ARRAY, JSON, DECIMAL, UniqueConstraint
-from sqlalchemy.dialects.postgresql import UUID, INET
+from sqlalchemy import Column, String, Boolean, DateTime, Integer, ForeignKey, Text, DECIMAL, UniqueConstraint
 from sqlalchemy.orm import relationship, declarative_base
 from datetime import datetime
 import uuid
+
+from app.core.db_types import UUID, INET, ARRAY, JSON
 
 Base = declarative_base()
 
@@ -26,7 +27,7 @@ class User(Base):
     # Relationships
     owned_shops = relationship("Shop", back_populates="owner")
     shop_memberships = relationship("ShopMember", back_populates="user")
-    assigned_conversations = relationship("Conversation", back_populates="assigned_user")
+    assigned_conversations = relationship("Conversation", foreign_keys="Conversation.assigned_to", back_populates="assigned_user")
     
     def __repr__(self):
         return f"<User {self.username}>"

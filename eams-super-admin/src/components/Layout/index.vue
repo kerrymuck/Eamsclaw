@@ -33,7 +33,7 @@
           </template>
           <el-menu-item index="/system/info">系统信息</el-menu-item>
           <el-menu-item index="/system/params">参数设置</el-menu-item>
-          <el-menu-item index="/system/version">版本说明</el-menu-item>
+          <el-menu-item index="/system/version">版本管理</el-menu-item>
         </el-sub-menu>
         
         <!-- 服务商管理 -->
@@ -44,6 +44,7 @@
           </template>
           <el-menu-item index="/provider">服务商列表</el-menu-item>
           <el-menu-item index="/provider/settings">服务商设置</el-menu-item>
+          <el-menu-item index="/provider/blacklist">黑名单管理</el-menu-item>
         </el-sub-menu>
         
         <!-- 级别管理 -->
@@ -83,7 +84,7 @@
             <span>AI算力中控</span>
           </template>
           <el-menu-item index="/ai">大模型管理</el-menu-item>
-          <el-menu-item index="/ai/pricing">价格设置</el-menu-item>
+          <el-menu-item index="/ai/pricing">算力价格体系</el-menu-item>
         </el-sub-menu>
         
         <!-- 授权码管理 -->
@@ -94,6 +95,16 @@
           </template>
           <el-menu-item index="/license">授权列表</el-menu-item>
           <el-menu-item index="/license/settings">授权设置</el-menu-item>
+        </el-sub-menu>
+        
+        <!-- 商户管理 -->
+        <el-sub-menu index="/merchant">
+          <template #title>
+            <el-icon><Shop /></el-icon>
+            <span>商户管理</span>
+          </template>
+          <el-menu-item index="/merchant">商户列表</el-menu-item>
+          <el-menu-item index="/merchant/plans">套餐设置</el-menu-item>
         </el-sub-menu>
         
         <!-- 安全管理 -->
@@ -152,7 +163,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { 
   Odometer, Setting, OfficeBuilding, Medal, Monitor, 
-  Money, Cpu, Key, Lock, UserFilled, Fold, Expand, ArrowDown 
+  Money, Cpu, Key, Lock, UserFilled, Fold, Expand, ArrowDown, Shop
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import Breadcrumb from './Breadcrumb.vue'

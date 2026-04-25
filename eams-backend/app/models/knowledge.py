@@ -1,9 +1,9 @@
-from sqlalchemy import Column, String, DateTime, Integer, ForeignKey, Text, ARRAY, JSON, UniqueConstraint
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, DateTime, Integer, ForeignKey, Text, UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
 from .user import Base
+from app.core.db_types import UUID, ARRAY, JSON
 
 
 class KnowledgeCategory(Base):
@@ -30,7 +30,7 @@ class KnowledgeCategory(Base):
 
 
 class Knowledge(Base):
-    __tablename__ = "knowledge_base"
+    __tablename__ = "knowledge"
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     shop_id = Column(UUID(as_uuid=True), ForeignKey("shops.id", ondelete="CASCADE"), nullable=False)

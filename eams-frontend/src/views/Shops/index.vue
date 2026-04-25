@@ -6,7 +6,7 @@
         <h2>🏪 店铺管理</h2>
         <p class="subtitle">管理您的多平台店铺，一个界面统一管理</p>
       </div>
-      <el-button type="primary" size="large" @click="showAddDialog = true">
+      <el-button type="primary" size="large" @click="openAddDialog">
         <el-icon><Plus /></el-icon>
         添加店铺
       </el-button>
@@ -85,10 +85,10 @@
               <el-button size="small" circle><el-icon><More /></el-icon></el-button>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item>编辑</el-dropdown-item>
-                  <el-dropdown-item v-if="shop.authStatus === 'expired'">重新授权</el-dropdown-item>
-                  <el-dropdown-item divided>{{ shop.status === 'active' ? '暂停营业' : '恢复营业' }}</el-dropdown-item>
-                  <el-dropdown-item type="danger">删除</el-dropdown-item>
+                  <el-dropdown-item @click="editShop(shop)">编辑</el-dropdown-item>
+                  <el-dropdown-item v-if="shop.authStatus === 'expired'" @click="reauthShop(shop)">重新授权</el-dropdown-item>
+                  <el-dropdown-item divided @click="toggleShopStatus(shop)">{{ shop.status === 'active' ? '暂停营业' : '恢复营业' }}</el-dropdown-item>
+                  <el-dropdown-item type="danger" @click="deleteShop(shop)">删除</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -131,19 +131,234 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <!-- 添加/编辑店铺弹窗 -->
+    <el-dialog
+      v-model="showAddDialog"
+      :title="isEdit ? '编辑店铺' : '添加店铺'"
+      width="600px"
+      destroy-on-close
+    >
+      <el-form
+        ref="formRef"
+        :model="form"
+        :rules="formRules"
+        label-width="120px"
+      >
+        <el-form-item label="选择平台" prop="platform">
+          <el-select v-model="form.platform" placeholder="请选择电商平台" style="width: 100%">
+            <el-option
+              v-for="p in platformOptions"
+              :key="p.id"
+              :label="`${p.icon} ${p.name}`"
+              :value="p.id"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="店铺名称" prop="name">
+          <el-input v-model="form.name" placeholder="请输入店铺名称" maxlength="50" show-word-limit />
+        </el-form-item>
+
+        <el-form-item label="平台店铺ID" prop="platformShopId">
+          <el-input v-model="form.platformShopId" placeholder="请输入平台分配的店铺ID" />
+          <div class="form-tip">在平台后台可以查看店铺ID</div>
+        </el-form-item>
+
+        <el-form-item label="店铺Logo">
+          <el-upload
+            class="avatar-uploader"
+            action="#"
+            :show-file-list="false"
+            :auto-upload="false"
+            :on-change="handleLogoChange"
+          >
+            <el-avatar v-if="form.logo" :size="80" :src="form.logo" />
+            <div v-else class="upload-placeholder">
+              <el-icon :size="28"><Plus /></el-icon>
+              <span>点击上传</span>
+            </div>
+          </el-upload>
+        </el-form-item>
+
+        <el-form-item label="店铺状态">
+          <el-switch
+            v-model="form.status"
+            active-value="active"
+            inactive-value="inactive"
+            active-text="营业中"
+            inactive-text="已暂停"
+          />
+        </el-form-item>
+
+        <el-form-item label="授权码" prop="licenseCode" required>
+          <el-input v-model="form.licenseCode" placeholder="请输入授权码（一个店铺对应一个授权码）">
+            <template #append>
+              <el-button @click="verifyLicense">验证</el-button>
+            </template>
+          </el-input>
+          <div class="form-tip">
+            <el-link type="primary" @click="showLicenseHelp = true">如何获取授权码？</el-link>
+          </div>
+        </el-form-item>
+
+        <!-- 授权码验证结果显示 -->
+        <el-form-item v-if="licenseInfo.show">
+          <el-alert
+            :title="licenseInfo.valid ? '授权码有效' : '授权码无效'"
+            :type="licenseInfo.valid ? 'success' : 'error'"
+            :description="licenseInfo.message"
+            :closable="false"
+            show-icon
+          />
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <el-button @click="showAddDialog = false">取消</el-button>
+        <el-button type="primary" @click="saveShop" :loading="saving">
+          {{ isEdit ? '保存' : '添加' }}
+        </el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 版本更新提示弹窗 -->
+    <el-dialog
+      v-model="showUpdateDialog"
+      title="发现新版本"
+      width="500px"
+      :close-on-click-modal="!updateInfo?.forceUpdate"
+      :close-on-press-escape="!updateInfo?.forceUpdate"
+      :show-close="!updateInfo?.forceUpdate"
+    >
+      <div class="update-content" v-if="updateInfo">
+        <div class="update-version">
+          <span class="version-label">最新版本</span>
+          <span class="version-num">v{{ updateInfo.version }}</span>
+        </div>
+        <div class="update-current">当前版本: v{{ currentVersion }}</div>
+        
+        <div class="update-desc">
+          <h4>更新内容:</h4>
+          <p>{{ updateInfo.description }}</p>
+        </div>
+
+        <div class="update-info">
+          <div class="info-item">
+            <span class="label">文件大小:</span>
+            <span class="value">{{ updateInfo.fileSize }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">发布时间:</span>
+            <span class="value">{{ updateInfo.publishTime }}</span>
+          </div>
+        </div>
+
+        <el-alert
+          v-if="updateInfo.forceUpdate"
+          title="此版本为强制更新，必须更新后才能继续使用"
+          type="warning"
+          :closable="false"
+          show-icon
+        />
+      </div>
+
+      <template #footer>
+        <el-button v-if="!updateInfo?.forceUpdate" @click="showUpdateDialog = false">
+          稍后更新
+        </el-button>
+        <el-button type="primary" @click="downloadUpdate" :loading="downloading">
+          {{ downloading ? '下载中...' : '立即更新' }}
+        </el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 授权码帮助弹窗 -->
+    <el-dialog v-model="showLicenseHelp" title="如何获取授权码" width="500px">
+      <div class="license-help">
+        <h4>授权码获取方式：</h4>
+        <ol>
+          <li>联系您的服务商获取授权码</li>
+          <li>每个店铺需要一个独立的授权码</li>
+          <li>授权码格式：EAMS-XXX-XXXX-XXXXXXXX</li>
+          <li>授权码与店铺绑定后不可重复使用</li>
+        </ol>
+        <el-alert
+          title="温馨提示"
+          description="如果您还没有授权码，请联系您的服务商购买套餐获取。"
+          type="info"
+          :closable="false"
+          style="margin-top: 16px;"
+        />
+      </div>
+      <template #footer>
+        <el-button @click="showLicenseHelp = false">我知道了</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Plus, More, ChatDotRound, Document } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import type { FormInstance, FormRules, UploadFile } from 'element-plus'
 import { getAllPlatforms, getPlatformIcon, getPlatformName, getPlatformTagType } from '@/config/platforms'
 
 const router = useRouter()
 const platformOptions = getAllPlatforms()
 const filterPlatform = ref('all')
 const showAddDialog = ref(false)
+const isEdit = ref(false)
+const saving = ref(false)
+const formRef = ref<FormInstance>()
+
+// 更新相关
+const showUpdateDialog = ref(false)
+const downloading = ref(false)
+const updateInfo = ref<any>(null)
+const currentVersion = ref('1.2.2')
+
+// 表单数据
+const form = reactive({
+  id: null as number | null,
+  platform: '',
+  name: '',
+  platformShopId: '',
+  logo: '',
+  status: 'active',
+  authStatus: 'pending',
+  licenseCode: ''
+})
+
+// 授权码信息
+const licenseInfo = reactive({
+  show: false,
+  valid: false,
+  message: ''
+})
+
+// 授权码帮助弹窗
+const showLicenseHelp = ref(false)
+
+// 表单验证规则
+const formRules: FormRules = {
+  platform: [
+    { required: true, message: '请选择电商平台', trigger: 'change' }
+  ],
+  name: [
+    { required: true, message: '请输入店铺名称', trigger: 'blur' },
+    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+  ],
+  platformShopId: [
+    { required: true, message: '请输入平台店铺ID', trigger: 'blur' }
+  ],
+  licenseCode: [
+    { required: true, message: '请输入授权码', trigger: 'blur' },
+    { pattern: /^EAMS-[A-Z]{3}-\d{4}-[A-Z0-9]{8}$/, message: '授权码格式不正确', trigger: 'blur' }
+  ]
+}
 
 // 32个平台的模拟店铺数据
 const shops = ref([
@@ -204,6 +419,214 @@ const enterInbox = (shop: any) => {
 const viewOrders = (shop: any) => {
   router.push({ path: '/orders', query: { shopId: shop.id } })
 }
+
+// 打开添加弹窗
+const openAddDialog = () => {
+  isEdit.value = false
+  form.id = null
+  form.platform = ''
+  form.name = ''
+  form.platformShopId = ''
+  form.logo = ''
+  form.status = 'active'
+  form.authStatus = 'pending'
+  form.licenseCode = ''
+  licenseInfo.show = false
+  licenseInfo.valid = false
+  licenseInfo.message = ''
+  showAddDialog.value = true
+}
+
+// 编辑店铺
+const editShop = (shop: any) => {
+  isEdit.value = true
+  form.id = shop.id
+  form.platform = shop.platform
+  form.name = shop.name
+  form.platformShopId = shop.platformShopId
+  form.logo = shop.logo
+  form.status = shop.status
+  form.authStatus = shop.authStatus
+  form.licenseCode = shop.licenseCode || ''
+  licenseInfo.show = false
+  showAddDialog.value = true
+}
+
+// 验证授权码
+const verifyLicense = () => {
+  if (!form.licenseCode) {
+    ElMessage.warning('请输入授权码')
+    return
+  }
+  
+  // 模拟验证
+  licenseInfo.show = true
+  
+  // 模拟验证成功
+  if (form.licenseCode.startsWith('EAMS-')) {
+    licenseInfo.valid = true
+    licenseInfo.message = '授权码有效，可用于绑定此店铺。授权到期时间：2027-04-10'
+    form.authStatus = 'active'
+  } else {
+    licenseInfo.valid = false
+    licenseInfo.message = '授权码无效或已被使用，请联系服务商获取有效授权码。'
+  }
+}
+
+// 保存店铺
+const saveShop = async () => {
+  if (!formRef.value) return
+  
+  await formRef.value.validate((valid) => {
+    if (!valid) return
+    
+    saving.value = true
+    
+    setTimeout(() => {
+      if (isEdit.value && form.id) {
+        // 编辑模式
+        const index = shops.value.findIndex(s => s.id === form.id)
+        if (index > -1) {
+          shops.value[index] = {
+            ...shops.value[index],
+            platform: form.platform,
+            name: form.name,
+            platformShopId: form.platformShopId,
+            logo: form.logo,
+            status: form.status,
+            authStatus: form.authStatus
+          }
+        }
+        ElMessage.success('店铺信息已更新')
+      } else {
+        // 添加模式
+        const newShop = {
+          id: Date.now(),
+          platform: form.platform,
+          name: form.name,
+          platformShopId: form.platformShopId,
+          logo: form.logo,
+          status: form.status,
+          authStatus: form.authStatus,
+          authExpireTime: '',
+          todayOrders: 0,
+          todaySales: '¥0',
+          unreadMessages: 0
+        }
+        shops.value.push(newShop)
+        ElMessage.success('新店铺添加成功')
+      }
+      
+      saving.value = false
+      showAddDialog.value = false
+    }, 500)
+  })
+}
+
+// 删除店铺
+const deleteShop = (shop: any) => {
+  ElMessageBox.confirm(
+    `确定要删除店铺「${shop.name}」吗？此操作不可恢复！`,
+    '删除确认',
+    {
+      confirmButtonText: '确定删除',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  ).then(() => {
+    const index = shops.value.findIndex(s => s.id === shop.id)
+    if (index > -1) {
+      shops.value.splice(index, 1)
+      ElMessage.success('店铺已删除')
+    }
+  })
+}
+
+// 切换店铺状态
+const toggleShopStatus = (shop: any) => {
+  const newStatus = shop.status === 'active' ? 'inactive' : 'active'
+  const actionText = newStatus === 'active' ? '恢复营业' : '暂停营业'
+  
+  ElMessageBox.confirm(
+    `确定要${actionText}「${shop.name}」吗？`,
+    '确认操作',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  ).then(() => {
+    shop.status = newStatus
+    ElMessage.success(`店铺已${actionText}`)
+  })
+}
+
+// 重新授权
+const reauthShop = (shop: any) => {
+  ElMessage.info(`正在重新授权「${shop.name}」，请稍候...`)
+  setTimeout(() => {
+    shop.authStatus = 'active'
+    shop.authExpireTime = '2025-12-31'
+    ElMessage.success('授权成功')
+  }, 1500)
+}
+
+// 处理Logo上传
+const handleLogoChange = (file: UploadFile) => {
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    form.logo = e.target?.result as string
+  }
+  if (file.raw) {
+    reader.readAsDataURL(file.raw)
+  }
+}
+
+// 检查版本更新
+const checkUpdate = async () => {
+  // 模拟API调用
+  await new Promise(resolve => setTimeout(resolve, 1000))
+  
+  // 模拟有新版本
+  updateInfo.value = {
+    version: '1.2.3',
+    description: '修复已知问题，优化性能，新增店铺管理功能',
+    fileSize: '45.2 MB',
+    forceUpdate: false,
+    publishTime: '2026-04-10 10:00:00',
+    downloadUrl: 'https://your-domain.com/downloads/v1.2.3.zip'
+  }
+  
+  showUpdateDialog.value = true
+}
+
+// 下载更新
+const downloadUpdate = () => {
+  downloading.value = true
+  
+  // 模拟下载
+  setTimeout(() => {
+    downloading.value = false
+    showUpdateDialog.value = false
+    
+    ElMessageBox.alert(
+      '更新包已下载完成，应用将在重启后更新到最新版本。',
+      '下载完成',
+      {
+        confirmButtonText: '立即重启',
+        callback: () => {
+          window.location.reload()
+        }
+      }
+    )
+  }, 2000)
+}
+
+// 初始化
+onMounted(() => {
+  // 启动时检查更新
+  checkUpdate()
+})
 </script>
 
 <style scoped>
@@ -340,5 +763,133 @@ const viewOrders = (shop: any) => {
 }
 .shop-actions .el-button {
   flex: 1;
+}
+
+/* 表单样式 */
+.form-tip {
+  font-size: 12px;
+  color: #909399;
+  margin-top: 4px;
+}
+
+.avatar-uploader {
+  border: 1px dashed #d9d9d9;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.avatar-uploader:hover {
+  border-color: #1677ff;
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #999;
+  font-size: 12px;
+}
+
+/* 更新弹窗样式 */
+.update-content {
+  padding: 10px 0;
+}
+
+.update-version {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.version-label {
+  font-size: 14px;
+  color: #909399;
+}
+
+.version-num {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1677ff;
+}
+
+.update-current {
+  font-size: 13px;
+  color: #909399;
+  margin-bottom: 16px;
+}
+
+.update-desc {
+  background: #f5f7fa;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.update-desc h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.update-desc p {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.6;
+}
+
+.update-info {
+  margin-bottom: 16px;
+}
+
+.update-info .info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.update-info .info-item:last-child {
+  border-bottom: none;
+}
+
+.update-info .label {
+  color: #909399;
+  font-size: 13px;
+}
+
+.update-info .value {
+  color: #333;
+  font-size: 13px;
+}
+
+/* 授权码帮助弹窗样式 */
+.license-help {
+  padding: 10px 0;
+}
+
+.license-help h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.license-help ol {
+  margin: 0;
+  padding-left: 20px;
+  color: #606266;
+  line-height: 2;
+}
+
+.license-help li {
+  margin: 4px 0;
 }
 </style>

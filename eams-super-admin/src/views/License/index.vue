@@ -69,11 +69,12 @@
             <el-option label="已禁用" value="disabled" />
           </el-select>
         </el-form-item>
-        <el-form-item label="类型">
-          <el-select v-model="searchForm.type" placeholder="全部类型" clearable style="width: 120px">
-            <el-option label="专业版" value="pro" />
-            <el-option label="企业版" value="enterprise" />
-            <el-option label="旗舰版" value="ultimate" />
+        <el-form-item label="服务商等级">
+          <el-select v-model="searchForm.providerLevel" placeholder="全部等级" clearable style="width: 120px">
+            <el-option label="普通服务商" value="normal" />
+            <el-option label="铜牌服务商" value="bronze" />
+            <el-option label="银牌服务商" value="silver" />
+            <el-option label="金牌服务商" value="gold" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -113,9 +114,9 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="type" label="类型" min-width="100">
+        <el-table-column prop="providerLevel" label="服务商等级" min-width="120">
           <template #default="{ row }">
-            <el-tag :type="getTypeType(row.type)">{{ getTypeText(row.type) }}</el-tag>
+            <el-tag :type="getLevelType(row.providerLevel)">{{ getLevelText(row.providerLevel) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="providerName" label="所属服务商" min-width="120" />
@@ -157,11 +158,12 @@
     <!-- 批量生成对话框 -->
     <el-dialog v-model="generateVisible" title="批量生成授权码" width="500px">
       <el-form :model="generateForm" label-width="100px">
-        <el-form-item label="授权类型">
-          <el-select v-model="generateForm.type" style="width: 100%">
-            <el-option label="专业版" value="pro" />
-            <el-option label="企业版" value="enterprise" />
-            <el-option label="旗舰版" value="ultimate" />
+        <el-form-item label="服务商等级">
+          <el-select v-model="generateForm.providerLevel" style="width: 100%">
+            <el-option label="普通服务商" value="normal" />
+            <el-option label="铜牌服务商" value="bronze" />
+            <el-option label="银牌服务商" value="silver" />
+            <el-option label="金牌服务商" value="gold" />
           </el-select>
         </el-form-item>
         <el-form-item label="所属服务商">
@@ -236,7 +238,7 @@ const searchForm = reactive({
   code: '',
   providerId: '',
   status: '',
-  type: ''
+  providerLevel: ''
 })
 
 const page = reactive({
@@ -251,7 +253,7 @@ const currentLicense = ref<any>(null)
 const selectedLicenses = ref<any[]>([])
 
 const generateForm = reactive({
-  type: 'pro',
+  providerLevel: 'normal',
   providerId: '',
   duration: 12,
   count: 10,
@@ -263,29 +265,31 @@ const renewForm = reactive({
 })
 
 const licenseList = ref([
-  { id: '1', code: 'EAMS-PRO-2026-X8K9M2N4P5', type: 'pro', providerName: '科技云', merchantName: '小明电商', status: 'active', expireDate: '2027-03-31 23:59:59', createTime: '2026-03-31 10:30:00' },
-  { id: '2', code: 'EAMS-ENT-2026-Q7W3E4R5T6', type: 'enterprise', providerName: '智慧零售', merchantName: '', status: 'pending', expireDate: '2027-03-31 23:59:59', createTime: '2026-03-31 09:15:00' },
-  { id: '3', code: 'EAMS-ULT-2026-Y2U8I9O0P1', type: 'ultimate', providerName: '未来电商', merchantName: '大伟科技', status: 'active', expireDate: '2026-12-31 23:59:59', createTime: '2026-03-30 16:45:00' },
-  { id: '4', code: 'EAMS-PRO-2026-A1S2D3F4G5', type: 'pro', providerName: '星辰科技', merchantName: '', status: 'expired', expireDate: '2026-03-15 23:59:59', createTime: '2025-03-15 08:00:00' },
-  { id: '5', code: 'EAMS-ENT-2026-H6J7K8L9Z0', type: 'enterprise', providerName: '云端商务', merchantName: '云端旗舰店', status: 'disabled', expireDate: '2027-01-31 23:59:59', createTime: '2026-01-31 14:20:00' }
+  { id: '1', code: 'EAMS-PRO-2026-X8K9M2N4P5', providerLevel: 'gold', providerName: '科技云', merchantName: '小明电商', status: 'active', expireDate: '2027-03-31 23:59:59', createTime: '2026-03-31 10:30:00' },
+  { id: '2', code: 'EAMS-ENT-2026-Q7W3E4R5T6', providerLevel: 'silver', providerName: '智慧零售', merchantName: '', status: 'pending', expireDate: '2027-03-31 23:59:59', createTime: '2026-03-31 09:15:00' },
+  { id: '3', code: 'EAMS-ULT-2026-Y2U8I9O0P1', providerLevel: 'gold', providerName: '未来电商', merchantName: '大伟科技', status: 'active', expireDate: '2026-12-31 23:59:59', createTime: '2026-03-30 16:45:00' },
+  { id: '4', code: 'EAMS-PRO-2026-A1S2D3F4G5', providerLevel: 'bronze', providerName: '星辰科技', merchantName: '', status: 'expired', expireDate: '2026-03-15 23:59:59', createTime: '2025-03-15 08:00:00' },
+  { id: '5', code: 'EAMS-ENT-2026-H6J7K8L9Z0', providerLevel: 'normal', providerName: '云端商务', merchantName: '云端旗舰店', status: 'disabled', expireDate: '2027-01-31 23:59:59', createTime: '2026-01-31 14:20:00' }
 ])
 
-const getTypeType = (type: string) => {
+const getLevelType = (level: string) => {
   const map: Record<string, string> = {
-    pro: '',
-    enterprise: 'success',
-    ultimate: 'danger'
+    normal: 'info',
+    bronze: 'warning',
+    silver: 'success',
+    gold: 'danger'
   }
-  return map[type] || ''
+  return map[level] || ''
 }
 
-const getTypeText = (type: string) => {
+const getLevelText = (level: string) => {
   const map: Record<string, string> = {
-    pro: '专业版',
-    enterprise: '企业版',
-    ultimate: '旗舰版'
+    normal: '普通服务商',
+    bronze: '铜牌服务商',
+    silver: '银牌服务商',
+    gold: '金牌服务商'
   }
-  return map[type] || type
+  return map[level] || level
 }
 
 const getStatusType = (status: string) => {
@@ -316,7 +320,7 @@ const resetSearch = () => {
   searchForm.code = ''
   searchForm.providerId = ''
   searchForm.status = ''
-  searchForm.type = ''
+  searchForm.providerLevel = ''
 }
 
 const handleBatchGenerate = () => {

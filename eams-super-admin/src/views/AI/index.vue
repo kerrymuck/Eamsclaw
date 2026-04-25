@@ -106,35 +106,46 @@
       </el-table>
     </el-card>
 
-    <!-- 价格设置 -->
+    <!-- 官方价格设置 - 服务商拿货价 = 零售价 × 折扣 -->
     <el-card class="pricing-card">
       <template #header>
         <div class="card-header">
-          <span>对外售价设置</span>
+          <div>
+            <span>官方AI模型价格设置</span>
+            <el-tag type="warning" style="margin-left: 10px;">服务商拿货价基准</el-tag>
+          </div>
           <el-button type="primary" @click="handleSavePricing">保存设置</el-button>
         </div>
       </template>
 
+      <el-alert
+        title="价格设置说明"
+        description="官方零售价为服务商设置价格的基准。服务商拿货价 = 官方零售价 × 服务商等级折扣。不同等级服务商享受不同折扣。"
+        type="info"
+        :closable="false"
+        style="margin-bottom: 20px;"
+      />
+
       <el-table :data="pricingList" stripe>
         <el-table-column prop="modelName" label="模型" min-width="150" />
-        <el-table-column prop="costPrice" label="成本价" min-width="120">
+        <el-table-column prop="officialPrice" label="官方零售价" min-width="150">
           <template #default="{ row }">
-            <span class="cost-price">¥{{ row.costPrice }}/1K tokens</span>
+            <el-input-number v-model="row.officialPrice" :min="0.0001" :precision="4" :step="0.001" style="width: 130px" />
           </template>
         </el-table-column>
-        <el-table-column prop="salePrice" label="销售价" min-width="150">
+        <el-table-column label="服务商折扣" min-width="280">
           <template #default="{ row }">
-            <el-input-number v-model="row.salePrice" :min="row.costPrice" :precision="4" :step="0.001" style="width: 120px" />
+            <div class="discount-info">
+              <span class="discount-tag">普通: {{ row.discounts?.normal || 100 }}%</span>
+              <span class="discount-tag">铜牌: {{ row.discounts?.bronze || 85 }}%</span>
+              <span class="discount-tag">银牌: {{ row.discounts?.silver || 75 }}%</span>
+              <span class="discount-tag">金牌: {{ row.discounts?.gold || 60 }}%</span>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column prop="profit" label="利润率" min-width="100">
+        <el-table-column prop="status" label="状态" min-width="100">
           <template #default="{ row }">
-            <span class="profit">{{ ((row.salePrice - row.costPrice) / row.costPrice * 100).toFixed(1) }}%</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="minDiscount" label="最低折扣" min-width="120">
-          <template #default="{ row }">
-            <el-slider v-model="row.minDiscount" :min="10" :max="100" show-input size="small" />
+            <el-switch v-model="row.enabled" />
           </template>
         </el-table-column>
       </el-table>
@@ -256,15 +267,19 @@ const modelList = ref([
   { id: '8', name: 'Kimi', modelId: 'kimi', provider: '月之暗面', inputPrice: 0.006, outputPrice: 0.006, contextLength: 200000, todayUsage: 178000, status: 'active' }
 ])
 
+// 官方AI模型价格配置 - 服务商拿货价 = 零售价 × 折扣
 const pricingList = ref([
-  { modelName: 'GPT-4 Turbo', costPrice: 0.04, salePrice: 0.08, minDiscount: 50 },
-  { modelName: 'GPT-3.5 Turbo', costPrice: 0.002, salePrice: 0.005, minDiscount: 40 },
-  { modelName: 'Claude 3 Opus', costPrice: 0.09, salePrice: 0.18, minDiscount: 50 },
-  { modelName: 'Claude 3 Sonnet', costPrice: 0.018, salePrice: 0.036, minDiscount: 50 },
-  { modelName: '文心一言4.0', costPrice: 0.024, salePrice: 0.048, minDiscount: 50 },
-  { modelName: '通义千问Max', costPrice: 0.04, salePrice: 0.08, minDiscount: 50 },
-  { modelName: 'GLM-4', costPrice: 0.02, salePrice: 0.04, minDiscount: 50 },
-  { modelName: 'Kimi', costPrice: 0.012, salePrice: 0.024, minDiscount: 50 }
+  { modelName: 'GPT-4 Turbo', officialPrice: 0.215, enabled: true, discounts: { normal: 100, bronze: 85, silver: 75, gold: 60 } },
+  { modelName: 'GPT-3.5 Turbo', officialPrice: 0.0215, enabled: true, discounts: { normal: 100, bronze: 85, silver: 75, gold: 60 } },
+  { modelName: 'GPT-4o', officialPrice: 0.036, enabled: true, discounts: { normal: 100, bronze: 85, silver: 75, gold: 60 } },
+  { modelName: 'Claude 3 Opus', officialPrice: 0.645, enabled: true, discounts: { normal: 100, bronze: 85, silver: 75, gold: 60 } },
+  { modelName: 'Claude 3 Sonnet', officialPrice: 0.108, enabled: true, discounts: { normal: 100, bronze: 85, silver: 75, gold: 60 } },
+  { modelName: 'Claude 3.5', officialPrice: 0.538, enabled: true, discounts: { normal: 100, bronze: 85, silver: 75, gold: 60 } },
+  { modelName: '文心一言4.0', officialPrice: 0.12, enabled: true, discounts: { normal: 100, bronze: 85, silver: 75, gold: 60 } },
+  { modelName: '通义千问Max', officialPrice: 0.08, enabled: true, discounts: { normal: 100, bronze: 85, silver: 75, gold: 60 } },
+  { modelName: 'GLM-4', officialPrice: 0.10, enabled: true, discounts: { normal: 100, bronze: 85, silver: 75, gold: 60 } },
+  { modelName: 'Kimi', officialPrice: 0.024, enabled: true, discounts: { normal: 100, bronze: 85, silver: 75, gold: 60 } },
+  { modelName: '豆包Pro', officialPrice: 0.016, enabled: true, discounts: { normal: 100, bronze: 85, silver: 75, gold: 60 } }
 ])
 
 const handleAddModel = () => {
@@ -391,12 +406,28 @@ onUnmounted(() => {
 }
 
 .cost-price {
-  color: #909399;
+  color: #f56c6c;
+  font-weight: bold;
 }
 
 .profit {
   color: #67c23a;
   font-weight: bold;
+}
+
+.discount-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.discount-tag {
+  padding: 2px 6px;
+  background: #f0f9ff;
+  border: 1px solid #91d5ff;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #1890ff;
 }
 
 .chart-container {

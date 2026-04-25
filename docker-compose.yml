@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:15-alpine
+    container_name: eams-postgres
+    environment:
+      POSTGRES_USER: eams
+      POSTGRES_PASSWORD: eams123
+      POSTGRES_DB: eams
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eams"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: eams-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # RabbitMQ 消息队列 (可选)
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: eams-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: eams
+      RABBITMQ_DEFAULT_PASS: eams123
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  # EAMS 后端服务
+  backend:
+    build:
+      context: ./eams-backend
+      dockerfile: Dockerfile
+    container_name: eams-backend
+    environment:
+      DATABASE_URL: postgresql://eams:eams123@postgres:5432/eams
+      REDIS_URL: redis://redis:6379/0
+      RABBITMQ_URL: amqp://eams:eams123@rabbitmq:5672/
+      SECRET_KEY: your-secret-key-change-in-production
+      DEBUG: "false"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  rabbitmq_data:

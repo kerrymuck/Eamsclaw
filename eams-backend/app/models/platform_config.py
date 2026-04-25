@@ -3,11 +3,11 @@
 管理各电商平台的API配置和授权信息
 """
 
-from sqlalchemy import Column, String, DateTime, Integer, ForeignKey, Text, Boolean, JSON, UniqueConstraint
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, DateTime, Integer, ForeignKey, Text, Boolean, UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
+from app.core.db_types import UUID, JSON
 from .user import Base
 
 
